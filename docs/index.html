@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+    <title>Lista de tareas - VueJS</title>
+    <link rel="stylesheet"
+      href="style.css">
+    <link rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous">
+  </head>
+
+  <body>
+    <div id="lista-compras">
+      <nav class="navbar navbar-light bg-light">
+        <span class="navbar-brand mb-0 h1 font-weight-bold">
+          {{ header ? header.toUpperCase() : 'Header no tiene valor' }}
+        </span>
+      </nav>
+      <div class="container my-4">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <div class="form-group">
+              <label for="">Nombre de tarea:</label>
+              <input type="text"
+                class="form-control"
+                v-model="nuevaTarea"
+                placeholder="Ej: Peinar al perro"
+                @keyup.enter="agregarTarea">
+              <div class="d-block">
+                <small class="form-text text-muted float-left mb-2"
+                  v-show="nuevaTarea.length < 5">
+                  Escribe más de 5 caracteres
+                </small>
+                <small class="form-text text-info float-right mb-2">
+                  {{ nuevaTarea.length }} / {{ cantidadCaracteres(100) }}
+                </small>
+              </div>
+              <button type="button"
+                class="btn btn-success btn-block mt-2"
+                v-on:click="agregarTarea"
+                v-bind:disabled="nuevaTarea.length < 5">Agrega esta tarea</button>
+            </div>
+            <hr />
+          </div>
+          <div class="col-12"
+            v-if="tareas.length === 0">
+            <div class="alert alert-info text-center"
+              role="alert">
+              ¡No hay tareas que mostrar!
+            </div>
+          </div>
+          <div class="col-12"
+            v-else>
+            <h5>Mi lista:</h5>
+            <small class="form-text text-muted mb-2">
+              Haz click en el botón para cambiar.
+            </small>
+            <hr />
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center"
+                :class="{'bg-info text-white':tarea.hecho}"
+                v-for="tarea in tareasPila">
+                {{ tarea.nombre }}
+                <span :class="['badge badge-pill click p-2', {'badge-dark': tarea.hecho, 'badge-info': !tarea.hecho}]"
+                  @click="tareaHecha(tarea)">
+                  {{ tarea.hecho ? '¿Sin Completar?' : '¿Completar?'}}
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- versión de desarrollo, incluye advertencias de ayuda en la consola -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      var app = new Vue({
+        el: '#lista-compras',
+        data: {
+          header: 'Lista de tareas - Vue JS',
+          nuevaTarea: '',
+          tareas: (localStorage.getItem('tareas')) ? JSON.parse(localStorage.getItem('tareas')) : []
+        },
+        methods: {
+          agregarTarea: function() {
+            this.tareas.push({
+              nombre: this.nuevaTarea,
+              hecho: false
+            });
+            localStorage.setItem('tareas', JSON.stringify(this.tareas));
+            this.nuevaTarea = '';
+          },
+          tareaHecha: function(tarea) {
+            tarea.hecho = !tarea.hecho;
+            localStorage.setItem('tareas', JSON.stringify(this.tareas));
+          },
+          cantidadCaracteres: function(total) {
+            return total - this.nuevaTarea.length;
+          }
+        },
+        computed: {
+          tareasPila: function() {
+            return this.tareas.slice(0).reverse();
+          }
+        }
+      });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+      crossorigin="anonymous"></script>
+  </body>
+
+</html>

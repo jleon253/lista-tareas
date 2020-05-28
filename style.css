@@ -1,3 +1,12 @@
 .click{
   cursor: pointer;
 }
+
+input.form-control::placeholder{
+  font-style: italic;
+  color: #c5c5c5;
+}
+
+.nombre-tarea{
+  word-break: break-all;
+}

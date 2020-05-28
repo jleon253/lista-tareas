@@ -28,6 +28,8 @@
               <label for="">Nombre de tarea:</label>
               <input type="text"
                 class="form-control"
+                minlength="0"
+                maxlength="100"
                 v-model="nuevaTarea"
                 placeholder="Ej: Peinar al perro"
                 @keyup.enter="agregarTarea">
@@ -66,7 +68,7 @@
                 :class="{'bg-info text-white':tarea.hecho}"
                 v-for="tarea in tareasPila">
                 {{ tarea.nombre }}
-                <span :class="['badge badge-pill click p-2', {'badge-dark': tarea.hecho, 'badge-info': !tarea.hecho}]"
+                <span :class="['badge badge-pill click p-2 ml-2', {'badge-dark': tarea.hecho, 'badge-info': !tarea.hecho}]"
                   @click="tareaHecha(tarea)">
                   {{ tarea.hecho ? '¿Sin Completar?' : '¿Completar?'}}
                 </span>
